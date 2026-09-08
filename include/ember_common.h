@@ -22,6 +22,7 @@ typedef enum {
     EMBER_ERR_IO = -5,
     EMBER_ERR_TYPE = -6,
     EMBER_ERR_PROTOCOL = -7,
+    EMBER_ERR_AGAIN = -8, /* not enough data buffered yet; not a real error */
 } ember_status;
 
 typedef enum {
