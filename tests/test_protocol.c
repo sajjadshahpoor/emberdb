@@ -1,4 +1,5 @@
 #include "ember_protocol.h"
+#include "ember_common.h"
 #include "test_common.h"
 
 #include <string.h>
