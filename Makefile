@@ -1,5 +1,5 @@
 CC       := gcc
-STD      := -std=c11
+STD      := -std=gnu11
 WARN     := -Wall -Wextra -Wpedantic
 INCLUDES := -Iinclude
 LDLIBS   := -lpthread
