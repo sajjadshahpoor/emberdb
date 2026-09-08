@@ -62,6 +62,19 @@ static void test_clear(void) {
     sds_free(s);
 }
 
+static void test_advance_drops_prefix(void) {
+    sds s = sds_new("hello world");
+    sds_advance(s, 6);
+    ASSERT_STREQ(s, "world");
+    ASSERT_EQ(sds_len(s), 5u);
+
+    sds_advance(s, 100); /* past the end: clamps to empty */
+    ASSERT_STREQ(s, "");
+    ASSERT_EQ(sds_len(s), 0u);
+
+    sds_free(s);
+}
+
 static void test_many_small_appends(void) {
     sds s = sds_empty();
     for (int i = 0; i < 10000; i++) {
@@ -79,6 +92,7 @@ int main(void) {
     RUN_TEST(test_cat_printf);
     RUN_TEST(test_dup_and_cmp);
     RUN_TEST(test_clear);
+    RUN_TEST(test_advance_drops_prefix);
     RUN_TEST(test_many_small_appends);
     TEST_REPORT_AND_EXIT();
 }

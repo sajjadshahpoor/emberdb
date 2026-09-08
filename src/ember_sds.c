@@ -131,6 +131,18 @@ void sds_clear(sds s) {
     hdr->buf[0] = '\0';
 }
 
+void sds_advance(sds s, size_t n) {
+    sds_header *hdr = SDS_HDR(s);
+    if (n >= hdr->len) {
+        hdr->len = 0;
+        hdr->buf[0] = '\0';
+        return;
+    }
+    memmove(hdr->buf, hdr->buf + n, hdr->len - n);
+    hdr->len -= n;
+    hdr->buf[hdr->len] = '\0';
+}
+
 int sds_cmp(const sds a, const sds b) {
     size_t la = sds_len(a), lb = sds_len(b);
     size_t minlen = la < lb ? la : lb;

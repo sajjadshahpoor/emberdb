@@ -52,6 +52,11 @@ sds sds_cat_printf(sds s, const char *fmt, ...);
 sds sds_dup(const sds s);
 void sds_clear(sds s);
 
+/* Removes the first `n` bytes in place, shifting the remainder left. Used
+ * by the connection read loop to drop a command's bytes off the front of
+ * the input buffer once the protocol parser has consumed them. */
+void sds_advance(sds s, size_t n);
+
 int sds_cmp(const sds a, const sds b);
 
 #endif /* EMBER_SDS_H */
