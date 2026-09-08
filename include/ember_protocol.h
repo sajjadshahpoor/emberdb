@@ -62,4 +62,11 @@ sds ember_reply_bulk_string(sds buf, const char *data, size_t len);
 sds ember_reply_null_bulk(sds buf);
 sds ember_reply_array_header(sds buf, int64_t count);
 
+/* Encodes argv/argvlen as a RESP multibulk *request* (the same framing a
+ * real client sends). Reused for two things that both need to write a
+ * command back out onto a byte stream: the AOF (which logs commands
+ * verbatim so replay can feed them straight back through the parser) and
+ * the CLI client (which needs to send whatever the user typed). */
+sds ember_encode_multibulk(char *const *argv, const size_t *argvlen, int argc);
+
 #endif /* EMBER_PROTOCOL_H */

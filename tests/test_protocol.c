@@ -156,6 +156,24 @@ static void test_reply_serialization(void) {
     sds_free(buf);
 }
 
+static void test_encode_multibulk_round_trips_through_parse(void) {
+    char *argv[] = {"SET", "foo", "bar"};
+    size_t argvlen[] = {3, 3, 3};
+
+    sds encoded = ember_encode_multibulk(argv, argvlen, 3);
+    ASSERT_STREQ(encoded, "*3\r\n$3\r\nSET\r\n$3\r\nfoo\r\n$3\r\nbar\r\n");
+
+    ember_command cmd;
+    size_t consumed;
+    ASSERT_EQ(ember_protocol_parse(encoded, sds_len(encoded), &cmd, &consumed), EMBER_OK);
+    ASSERT_EQ(cmd.argc, 3);
+    ASSERT_STREQ(cmd.argv[0], "SET");
+    ASSERT_STREQ(cmd.argv[2], "bar");
+
+    ember_command_free(&cmd);
+    sds_free(encoded);
+}
+
 int main(void) {
     RUN_TEST(test_parse_multibulk_basic);
     RUN_TEST(test_parse_incomplete_returns_again);
@@ -166,5 +184,6 @@ int main(void) {
     RUN_TEST(test_parse_binary_safe_bulk);
     RUN_TEST(test_parse_malformed_is_protocol_error);
     RUN_TEST(test_reply_serialization);
+    RUN_TEST(test_encode_multibulk_round_trips_through_parse);
     TEST_REPORT_AND_EXIT();
 }

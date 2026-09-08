@@ -248,3 +248,14 @@ sds ember_reply_null_bulk(sds buf) {
 sds ember_reply_array_header(sds buf, int64_t count) {
     return sds_cat_printf(buf, "*%lld\r\n", (long long)count);
 }
+
+sds ember_encode_multibulk(char *const *argv, const size_t *argvlen, int argc) {
+    sds buf = ember_reply_array_header(sds_empty(), argc);
+    if (!buf) return NULL;
+
+    for (int i = 0; i < argc; i++) {
+        buf = ember_reply_bulk_string(buf, argv[i], argvlen[i]);
+        if (!buf) return NULL;
+    }
+    return buf;
+}
