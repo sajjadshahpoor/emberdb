@@ -27,4 +27,13 @@ typedef struct ember_server {
     uint64_t stat_commands_processed;
 } ember_server;
 
+/* Binds and listens on `port`, storing the listening fd on `server`. */
+int ember_server_listen(ember_server *server, int port);
+
+/* Registers the accept handler and background timers (active expiration,
+ * AOF fsync) and runs the event loop until ember_server_stop is called. */
+void ember_server_run(ember_server *server);
+
+void ember_server_stop(ember_server *server);
+
 #endif /* EMBER_SERVER_H */
