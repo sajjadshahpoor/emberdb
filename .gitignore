@@ -1,0 +1,25 @@
+# Build artifacts
+build/
+*.o
+*.a
+*.so
+*.out
+bin/
+
+# Editor / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Runtime data
+*.log
+*.aof
+*.rdb
+data/
+
+# Test / coverage
+*.gcda
+*.gcno
+*.gcov
+coverage/
