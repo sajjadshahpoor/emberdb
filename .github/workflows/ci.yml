@@ -21,6 +21,31 @@ jobs:
       - name: Run tests (release)
         run: make test
 
+      - name: End-to-end smoke test against the real server
+        run: |
+          ./bin/emberdb-server --port 7777 --no-aof &
+          SERVER_PID=$!
+          for i in $(seq 1 20); do
+            ./bin/emberdb-cli --port 7777 PING >/dev/null 2>&1 && break
+            sleep 0.2
+          done
+
+          PING=$(./bin/emberdb-cli --port 7777 PING)
+          echo "PING -> $PING"
+          [ "$PING" = "PONG" ]
+
+          ./bin/emberdb-cli --port 7777 SET foo bar >/dev/null
+          GET=$(./bin/emberdb-cli --port 7777 GET foo)
+          echo "GET foo -> $GET"
+          [ "$GET" = '"bar"' ]
+
+          ./bin/emberdb-cli --port 7777 INCR counter >/dev/null
+          INCR=$(./bin/emberdb-cli --port 7777 INCR counter)
+          echo "INCR counter -> $INCR"
+          [ "$INCR" = "(integer) 2" ]
+
+          kill $SERVER_PID
+
       - name: Clean
         run: make clean
 
